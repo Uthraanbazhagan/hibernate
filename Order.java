@@ -10,15 +10,36 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 @Entity
-@Table(name="TBL_ORDER")
+@Table(name =  "TBL_ORDER")
 public class Order {
 
 	@Id
 	@GeneratedValue
 	@Column(name = "ORDER_ID")
-	private int id;
+	private int id; // order id
 	
+	private Date orderDate;
+	private double amount;
+	
+	//one customer having many orders
+	@ManyToOne
+	@JoinColumn(name = "CUST_ID") //foreign key
+	private Customer customer; // for keeping the customer id
+	
+	@OneToOne
+	@JoinColumn(name = "PAYMENT_ID")
+	private Payment payment;
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -50,26 +71,6 @@ public class Order {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-
-	private Date orderDate;
-	private double amount;
-	
-	@ManyToOne
-	@JoinColumn(name="CUST_ID")
-	private Customer customer;
-	
-	@OneToOne
-	@JoinColumn(name ="P_ID")
-	private Payment payment;
-
-	public Payment getPayment() {
-		return payment;
-	}
-
-	public void setPayment(Payment payment) {
-		this.payment = payment;
-	}
-   
 	
 	
 	

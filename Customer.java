@@ -8,24 +8,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name = "TBL_CUST")
+@Table(name="TBL_CUST")
 public class Customer {
 
-	@Id //pk
+	@Id
 	@GeneratedValue
-	@Column(name = "CUST_ID")
+	@Column(name="CUST_ID")
 	private int id;
 	
 	private String name;
-	
-	@Column(unique = true)
+	@Column(unique=true)
 	private String email;
-	
 	private Date dateOfBirth;
 	private String city;
-	
 	
 	public int getId() {
 		return id;
@@ -57,6 +53,5 @@ public class Customer {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	
 	
 }

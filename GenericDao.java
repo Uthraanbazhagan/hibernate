@@ -1,4 +1,4 @@
-package com.lti.dao;
+package com.lti.entity;
 
 import java.util.List;
 
@@ -8,68 +8,63 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import com.lti.entity.Customer;
-
 public class GenericDao {
 
-	 public void save(Object object) {
-		 EntityManagerFactory emf  = null;
-			EntityManager em=null;
-			try {
-					emf=Persistence.createEntityManagerFactory("oracle-pu");
-					em= emf.createEntityManager();
+	// CODE FOR INSERTING & UPDATING
+	public void save(Object obj) {
+	EntityManagerFactory emf =null;
+	EntityManager em = null;
+	try {
+		emf = Persistence.createEntityManagerFactory("oracleTest");
+		em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
 			
-			EntityTransaction tx = em.getTransaction();
-			 tx.begin();
+			tx.begin();
+			em.merge(obj);//merge method is used for insert n update both
+			tx.commit();
+	}
+	finally {
+			em.close();
+			emf.close();
+	}
+}
+	
+	
+	public Object fetchById(Class classname, Object id) {
+		EntityManagerFactory emf =null;
+		EntityManager em = null;
+		try {
+			emf = Persistence.createEntityManagerFactory("oracleTest");
+			em = emf.createEntityManager();
+			
+			Object obj=em.find(classname,id);
+			return obj;
+		}
+		finally {
+		em.close();
+		emf.close();
 		
-			 em.merge(object); //merge method updates the table
-			 
-			 tx.commit();
-			}
-			finally {
-			 em.close();
-			 emf.close();
-	 }
-	 }
-	 public Object fetchbyId(Class classname,Object id) {
-		 EntityManagerFactory  emf =null;
-		 EntityManager em=null;
-			try {
-				 emf=Persistence.createEntityManagerFactory("oracle-pu");
-				 em = emf.createEntityManager();
-		 
-		 //find method generates select query
-		 Object obj = em.find(classname, id);
-		 return obj;
-			}
-			finally {
-		 em.close();
-		 emf.close();
-			}
-		 
-	 }
-	 public <E> List<E> databaseFetchAll(Class<E> clazz) {
-		 EntityManagerFactory  emf = null;
-		 EntityManager em = null;
-		 try {
-			 
-			emf=	 Persistence.createEntityManagerFactory("oracle-pu");
-			em= emf.createEntityManager();
-		 
-		 //introducing JP-QL/HQL
-		 //c is the alias fro classname (select c --> is equal to select *)
-		 Query q = em.createQuery("select obj from "+clazz.getName()+" as obj");//select * from ClassName c (or) select c.name from className
-		 
-		 List<E> list = q.getResultList();
-		 return list;
-		 }
-		 finally {
-		 em.close();
-		 emf.close();
-		 }
-		 
-	 }
-
+		}
+	}
+	
+	//List <?> --> '?' indicates it can be a list of any object (i.e Customer or Order )
+	// Using generics so we dont have to typecast in OrderTest.java
+	public <E> List<E> fetchAll(Class<E> clazz) { //use of Generics
+		EntityManagerFactory emf =null;
+		EntityManager em = null;
+		try {
+			emf = Persistence.createEntityManagerFactory("oracleTest");
+			em = emf.createEntityManager();
+			
+			Query q=em.createQuery("Select obj from " + clazz.getName() + " as obj");
+			List<E> list=q.getResultList();
+			return list;
+					}
+	finally {
+		    em.close();
+			emf.close();
+	}
+		}
 
 
 }
